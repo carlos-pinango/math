@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilité - Ressources</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { color: #e67e22; border-bottom: 2px solid #fcf3cf; padding-bottom: 10px; }
+        
+        .concept-box {
+            background: #fdf2e9;
+            padding: 15px;
+            border-left: 5px solid #e67e22;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
 
+        .section-title { 
+            margin-top: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            text-transform: uppercase; 
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .resource-list { list-style: none; padding: 0; margin-top: 10px; }
+        
+        .resource-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .btn-action {
+            text-decoration: none;
+            background: #e67e22;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            transition: 0.3s;
+        }
+        
+        .btn-action:hover { background: #d35400; transform: scale(1.05); }
+
+        .back-link {
+            margin-top: 30px;
+            text-decoration: none;
+            color: #95a5a6;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: #2c3e50; padding-left: 5px; }
+
+        code { background: #eee; padding: 2px 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Probabilité</h1>
+
+    <div class="concept-box">
+        <strong>Rappel Rapide :</strong> L'espérance mathématique se calcule par la somme des produits des valeurs par leur probabilité : <br>
+        <code>E(X) = Σ (xᵢ × P(xᵢ))</code>
+    </div>
+
+    
+
+[Image of a probability tree diagram]
+
+
+    <div class="section-title">Documents de Cours</div>
+    <ul class="resource-list">
+        <li class="resource-item">
+            <span>Introduction aux probabilités (PDF)</span>
+            <a href="fichiers/intro-probabilite.pdf" class="btn-action">Télécharger</a>
+        </li>
+        <li class="resource-item">
+            <span>Feuille de formules : Espérance</span>
+            <a href="fichiers/formules-esperance.pdf" class="btn-action">Ouvrir</a>
+        </li>
+    </ul>
+
+    <div class="section-title">Exercices Interactifs</div>
+    <ul class="resource-list">
+        <li class="resource-item">
+            <span>Quiz : Événements indépendants</span>
+            <a href="#" class="btn-action">Lancer</a>
+        </li>
+        <li class="resource-item">
+            <span>Problèmes de dénombrement</span>
+            <a href="#" class="btn-action">Lancer</a>
+        </li>
+    </ul>
+
+    <div class="section-title">Outils Externes</div>
+    <ul class="resource-list">
+        <li class="resource-item">
+            <span>Simulateur de lancer de dés</span>
+            <a href="https://www.google.com/search?q=roll+a+die" target="_blank" class="btn-action">Visiter</a>
+        </li>
+    </ul>
+
+    <a href="index.html" class="back-link">← Retour aux sections</a>
+</div>
+
+</body>
+</html>
