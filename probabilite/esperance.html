@@ -1,1 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expérience : Espérance Mathématique (Sec 5 CST)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
 
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        #canvas {
+            transform-origin: center;
+            transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #ef4444;
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white p-6 shadow-lg">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-2xl md:text-3xl font-bold">Laboratoire : Espérance Mathématique</h1>
+            <p class="text-indigo-200 mt-2">Niveau : Secondaire 5 CST • Probabilités et Jeux de Hasard</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Controls & Theory -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- Game Settings -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 border-b pb-2">1. Configurer le Jeu</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Coût d'une partie (Mise)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-slate-400">$</span>
+                            <input type="number" id="betInput" value="5" min="0" class="w-full pl-8 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" onchange="updateCalculations()">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Secteurs de la roue</p>
+                        
+                        <!-- Sector 1 -->
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
+                            <span class="text-sm flex-1">Gros lot (10%)</span>
+                            <input type="number" id="prize1" value="30" class="w-20 text-sm p-1 border rounded text-right" onchange="updateCalculations()">
+                            <span class="text-sm text-slate-500">$</span>
+                        </div>
+
+                        <!-- Sector 2 -->
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                            <span class="text-sm flex-1">Prix Moyen (30%)</span>
+                            <input type="number" id="prize2" value="5" class="w-20 text-sm p-1 border rounded text-right" onchange="updateCalculations()">
+                            <span class="text-sm text-slate-500">$</span>
+                        </div>
+
+                        <!-- Sector 3 -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded-full bg-slate-300"></div>
+                            <span class="text-sm flex-1">Rien (60%)</span>
+                            <input type="number" id="prize3" value="0" class="w-20 text-sm p-1 border rounded text-right" disabled>
+                            <span class="text-sm text-slate-500">$</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theoretical Calculation -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 border-b pb-2">2. Analyse Théorique</h2>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-slate-600">Espérance de Gain ($E$):</span>
+                        <span id="theoreticalEm" class="font-bold text-xl">--</span>
+                    </div>
+                    <div id="formulaDisplay" class="text-xs text-slate-500 font-mono bg-slate-100 p-2 rounded break-all">
+                        <!-- Formula will be injected here -->
+                    </div>
+                    <div id="verdictBadge" class="text-center py-2 px-4 rounded-full text-sm font-bold bg-gray-100 text-gray-500">
+                        En attente...
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2 italic">
+                        * Si $E > 0$ : Jeu favorable<br>
+                        * Si $E = 0$ : Jeu équitable<br>
+                        * Si $E < 0$ : Jeu défavorable
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Column: The Game -->
+        <div class="lg:col-span-4 flex flex-col items-center justify-start space-y-6">
+            
+            <div class="bg-white rounded-xl shadow-lg border border-indigo-100 p-6 w-full flex flex-col items-center">
+                <div class="wheel-container mb-6">
+                    <div class="pointer"></div>
+                    <canvas id="canvas" width="300" height="300"></canvas>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 w-full">
+                    <button onclick="spin()" id="spinBtn" class="col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors flex justify-center items-center gap-2">
+                        <span>Lancer la roue</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    </button>
+                    <button onclick="simulate(100)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
+                        Simuler 100x
+                    </button>
+                    <button onclick="simulate(1000)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
+                        Simuler 1000x
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="resetGame()" class="text-xs text-red-500 hover:text-red-700 underline">Réinitialiser les données</button>
+                </div>
+            </div>
+
+            <!-- Last Spin Result -->
+            <div id="resultCard" class="bg-white w-full p-4 rounded-xl border border-slate-200 shadow-sm opacity-0 transition-opacity text-center">
+                <p class="text-sm text-slate-500 uppercase tracking-wide">Résultat du dernier tour</p>
+                <div class="flex justify-center items-baseline gap-2 mt-1">
+                    <span id="lastSpinPrize" class="text-2xl font-bold text-slate-800">$0</span>
+                    <span class="text-slate-400">-</span>
+                    <span id="lastSpinCost" class="text-slate-500">Mise</span>
+                    <span class="text-slate-400">=</span>
+                    <span id="lastSpinNet" class="text-2xl font-bold text-slate-800">$0</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Experimental Results -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 h-full">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 border-b pb-2">3. Résultats Expérimentaux</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card bg-slate-50 p-3 rounded-lg">
+                        <p class="text-xs text-slate-500">Nombre de parties</p>
+                        <p id="totalSpins" class="text-2xl font-bold text-slate-800">0</p>
+                    </div>
+                    <div class="stat-card bg-slate-50 p-3 rounded-lg">
+                        <p class="text-xs text-slate-500">Total des gains nets</p>
+                        <p id="totalNetGain" class="text-2xl font-bold text-slate-800">$0</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-sm font-medium text-slate-600 mb-2">Comparaison : Théorie vs Réalité</p>
+                    
+                    <!-- Visualization Bars -->
+                    <div class="space-y-4">
+                        <!-- Theoretical -->
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>Espérance Théorique</span>
+                                <span id="barLabelTheo">0$ / partie</span>
+                            </div>
+                            <div class="h-8 w-full bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
+                                <div id="barTheo" class="h-full bg-indigo-400/50 absolute left-1/2 transition-all duration-500 border-r border-indigo-500" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Experimental -->
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>Moyenne Expérimentale (Réalité)</span>
+                                <span id="barLabelExp">0$ / partie</span>
+                            </div>
+                            <div class="h-8 w-full bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
+                                <div id="barExp" class="h-full bg-emerald-500 absolute left-1/2 transition-all duration-300 border-r border-emerald-600" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 class="font-bold text-yellow-800 text-sm mb-1">Observation :</h3>
+                    <p class="text-xs text-yellow-700">
+                        Plus le nombre de parties augmente, plus la moyenne expérimentale devrait se rapprocher de l'espérance théorique. C'est la <strong>Loi des grands nombres</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Configuration & State ---
+        const sectors = [
+            { id: 1, label: 'Gros Lot', color: '#3b82f6', weight: 0.1, prizeInputId: 'prize1' }, // 10%
+            { id: 2, label: 'Moyen',    color: '#10b981', weight: 0.3, prizeInputId: 'prize2' }, // 30%
+            { id: 3, label: 'Rien',     color: '#cbd5e1', weight: 0.6, prizeInputId: 'prize3' }  // 60%
+        ];
+
+        let gameState = {
+            totalSpins: 0,
+            totalNetBalance: 0,
+            history: []
+        };
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2 - 10;
+        
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        // --- Initialization ---
+        window.onload = () => {
+            drawWheel();
+            updateCalculations();
+        };
+
+        // --- Core Math Functions ---
+        function getValues() {
+            const cost = parseFloat(document.getElementById('betInput').value) || 0;
+            const p1 = parseFloat(document.getElementById('prize1').value) || 0;
+            const p2 = parseFloat(document.getElementById('prize2').value) || 0;
+            const p3 = parseFloat(document.getElementById('prize3').value) || 0;
+            
+            // Assign prizes to sector objects temporarily
+            sectors[0].prize = p1;
+            sectors[1].prize = p2;
+            sectors[2].prize = p3;
+
+            return { cost, prizes: [p1, p2, p3] };
+        }
+
+        function calculateTheoreticalEm() {
+            const { cost } = getValues();
+            
+            // E = (P1 * Prob1 + P2 * Prob2 + P3 * Prob3) - Cost
+            // Or E = (P1-Cost)*Prob1 + (P2-Cost)*Prob2 ... (equivalent)
+            
+            let avgWin = 0;
+            sectors.forEach(s => {
+                avgWin += s.prize * s.weight;
+            });
+
+            const em = avgWin - cost;
+            return em;
+        }
+
+        function updateCalculations() {
+            const em = calculateTheoreticalEm();
+            const { cost } = getValues();
+
+            // Display EM
+            const emDisplay = document.getElementById('theoreticalEm');
+            emDisplay.textContent = `${em.toFixed(2)} $`;
+            emDisplay.className = `font-bold text-xl ${em > 0 ? 'text-emerald-600' : (em < 0 ? 'text-red-600' : 'text-slate-600')}`;
+
+            // Display Formula
+            const formulaHTML = `E = (${sectors[0].prize}×0,10 + ${sectors[1].prize}×0,30 + 0×0,60) - ${cost} = ${em.toFixed(2)}$`;
+            document.getElementById('formulaDisplay').innerHTML = formulaHTML;
+
+            // Verdict
+            const badge = document.getElementById('verdictBadge');
+            if (Math.abs(em) < 0.01) {
+                badge.textContent = "JEU ÉQUITABLE";
+                badge.className = "text-center py-2 px-4 rounded-full text-sm font-bold bg-blue-100 text-blue-700 border border-blue-200";
+            } else if (em > 0) {
+                badge.textContent = "JEU FAVORABLE (Joueur)";
+                badge.className = "text-center py-2 px-4 rounded-full text-sm font-bold bg-emerald-100 text-emerald-700 border border-emerald-200";
+            } else {
+                badge.textContent = "JEU DÉFAVORABLE (Maison)";
+                badge.className = "text-center py-2 px-4 rounded-full text-sm font-bold bg-red-100 text-red-700 border border-red-200";
+            }
+
+            drawWheel(); // Redraw in case prizes changed on the wheel text
+            updateComparisonBars();
+        }
+
+        // --- Visuals: Draw Wheel ---
+        function drawWheel() {
+            let startAngle = 0;
+            const { cost } = getValues();
+
+            sectors.forEach(sector => {
+                const sliceAngle = 2 * Math.PI * sector.weight;
+                
+                // Draw Slice
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = sector.color;
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw Text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 14px Arial";
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 2;
+                ctx.fillText(`${sector.prize}$`, radius - 20, 5);
+                ctx.restore();
+
+                startAngle += sliceAngle;
+            });
+        }
+
+        // --- Game Logic ---
+        function getRandomSector() {
+            const r = Math.random();
+            let accumulatedWeight = 0;
+            for(let s of sectors) {
+                accumulatedWeight += s.weight;
+                if (r <= accumulatedWeight) return s;
+            }
+            return sectors[sectors.length - 1];
+        }
+
+        function processResult(sector) {
+            const { cost } = getValues();
+            const netGain = sector.prize - cost;
+
+            gameState.totalSpins++;
+            gameState.totalNetBalance += netGain;
+
+            // Update DOM Stats
+            document.getElementById('totalSpins').innerText = gameState.totalSpins;
+            const netDisplay = document.getElementById('totalNetGain');
+            netDisplay.innerText = `${gameState.totalNetBalance.toFixed(0)} $`;
+            netDisplay.className = `text-2xl font-bold ${gameState.totalNetBalance >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
+
+            // Update Last Result Card
+            const card = document.getElementById('resultCard');
+            card.style.opacity = '1';
+            document.getElementById('lastSpinPrize').innerText = `${sector.prize}$`;
+            document.getElementById('lastSpinCost').innerText = `${cost}$`;
+            const spinNet = document.getElementById('lastSpinNet');
+            spinNet.innerText = `${netGain >= 0 ? '+' : ''}${netGain}$`;
+            spinNet.className = `text-2xl font-bold ${netGain >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
+
+            updateComparisonBars();
+        }
+
+        function updateComparisonBars() {
+            const em = calculateTheoreticalEm();
+            const avgExp = gameState.totalSpins > 0 ? (gameState.totalNetBalance / gameState.totalSpins) : 0;
+
+            // Determine scale: Find max value to fit in bar (e.g., max of abs(em) or abs(avgExp) or 20)
+            let maxVal = Math.max(Math.abs(em), Math.abs(avgExp), 10); 
+            
+            // Map 0 to 50% width. -maxVal to 0%, +maxVal to 100%
+            const mapToPercent = (val) => {
+                let pct = 50 + ((val / maxVal) * 50);
+                return Math.max(0, Math.min(100, pct)); // clamp 0-100
+            };
+
+            const barTheo = document.getElementById('barTheo');
+            const barExp = document.getElementById('barExp');
+
+            barTheo.style.left = em >= 0 ? '50%' : `${mapToPercent(em)}%`;
+            barTheo.style.width = `${Math.abs(mapToPercent(em) - 50)}%`;
+            barTheo.className = `h-full absolute transition-all duration-500 ${em >= 0 ? 'bg-indigo-400 border-l border-indigo-600' : 'bg-red-300 border-r border-red-500'}`;
+            // Correct positioning logic for bars originating from center
+            if(em < 0) {
+                barTheo.style.left = `${mapToPercent(em)}%`;
+                barTheo.style.right = '50%';
+            } else {
+                barTheo.style.left = '50%';
+            }
+
+            barExp.style.width = `${Math.abs(mapToPercent(avgExp) - 50)}%`;
+            if(avgExp < 0) {
+                barExp.style.left = `${mapToPercent(avgExp)}%`;
+                barExp.className = "h-full absolute transition-all duration-300 bg-red-500 border-r border-red-700";
+            } else {
+                barExp.style.left = '50%';
+                barExp.className = "h-full absolute transition-all duration-300 bg-emerald-500 border-l border-emerald-700";
+            }
+
+            document.getElementById('barLabelTheo').innerText = `${em.toFixed(2)} $`;
+            document.getElementById('barLabelExp').innerText = `${avgExp.toFixed(2)} $`;
+        }
+
+        // --- Interaction ---
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('spinBtn').classList.add('opacity-50');
+
+            // 1. Determine the result first (Math)
+            const sector = getRandomSector();
+            
+            // 2. Calculate the specific angle to align this sector with the pointer
+            // The pointer is at 12 o'clock (270 degrees relative to 0 at 3 o'clock)
+            
+            // Find the start/end angles of the winning sector
+            let startDeg = 0;
+            let endDeg = 0;
+            let currentAngleSum = 0;
+            
+            for(let s of sectors) {
+                const sectorDegrees = s.weight * 360;
+                if (s.id === sector.id) {
+                    startDeg = currentAngleSum;
+                    endDeg = currentAngleSum + sectorDegrees;
+                    break;
+                }
+                currentAngleSum += sectorDegrees;
+            }
+
+            // Pick a random specific angle within this sector (with padding to avoid lines)
+            const padding = 5; // degrees
+            const randomAngleInSector = startDeg + padding + Math.random() * (endDeg - startDeg - (padding * 2));
+
+            // Calculate how much we need to rotate to bring 'randomAngleInSector' to 270 degrees
+            // Formula: TargetPos = (InitialAngle + Rotation) % 360
+            // We want: (randomAngleInSector + Rotation) % 360 = 270
+            // So: Rotation = 270 - randomAngleInSector
+            
+            const currentMod = currentRotation % 360;
+            let targetRotation = (270 - randomAngleInSector) - currentMod;
+            
+            // Ensure positive rotation (clockwise)
+            while (targetRotation < 0) {
+                targetRotation += 360;
+            }
+            
+            // Add random number of full spins (min 5) for excitement
+            const spins = 5;
+            const finalRotation = targetRotation + (spins * 360);
+            
+            currentRotation += finalRotation;
+            
+            // Apply CSS transform
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // Wait for animation end
+            setTimeout(() => {
+                isSpinning = false;
+                document.getElementById('spinBtn').disabled = false;
+                document.getElementById('spinBtn').classList.remove('opacity-50');
+                
+                processResult(sector);
+                
+            }, 4000); // matches CSS transition time
+        }
+
+        function simulate(count) {
+            if (isSpinning) return;
+            
+            // Fast calculation without animation
+            for(let i=0; i<count; i++) {
+                const s = getRandomSector();
+                const { cost } = getValues();
+                const net = s.prize - cost;
+                gameState.totalSpins++;
+                gameState.totalNetBalance += net;
+            }
+            
+            updateComparisonBars();
+            
+            // Update displays
+            document.getElementById('totalSpins').innerText = gameState.totalSpins;
+            const netDisplay = document.getElementById('totalNetGain');
+            netDisplay.innerText = `${gameState.totalNetBalance.toFixed(0)} $`;
+            netDisplay.className = `text-2xl font-bold ${gameState.totalNetBalance >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
+            
+            // Show a generic message in result card
+            const card = document.getElementById('resultCard');
+            card.style.opacity = '1';
+            document.getElementById('lastSpinPrize').innerText = "---";
+            document.getElementById('lastSpinCost').innerText = "Simul.";
+            document.getElementById('lastSpinNet').innerText = "---";
+        }
+
+        function resetGame() {
+            gameState.totalSpins = 0;
+            gameState.totalNetBalance = 0;
+            document.getElementById('totalSpins').innerText = "0";
+            document.getElementById('totalNetGain').innerText = "$0";
+            document.getElementById('resultCard').style.opacity = '0';
+            document.getElementById('barExp').style.width = '0%';
+            updateCalculations(); // Reset theoretical view
+        }
+
+    </script>
+</body>
+</html>
