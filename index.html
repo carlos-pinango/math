@@ -12,17 +12,20 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f4f7f6;
+            background-color: #f8f9fa; /* Gris très léger pour faire ressortir les cartes */
         }
         header {
             text-align: center;
             padding: 40px 0;
-            background: #2c3e50;
+            background: #2c3e50; /* Garde une base sobre et pro */
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h1 { margin: 0; font-size: 2.5em; }
+        h1 { margin: 0; font-size: 2.2em; }
+        p.subtitle { margin-top: 10px; opacity: 0.9; }
+
         .course-list {
             list-style: none;
             padding: 0;
@@ -31,25 +34,33 @@
             background: white;
             margin-bottom: 15px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-left: 5px solid #bdc3c7; /* Couleur par défaut grise */
         }
-        .course-item:hover {
+        
+        /* Style spécifique pour la Probabilité */
+        .item-probabilite:hover {
             transform: translateX(10px);
-            border-left: 5px solid #3498db;
+            border-left: 5px solid #e67e22; /* Le orange uniforme */
         }
+        .item-probabilite .course-link {
+            color: #e67e22;
+        }
+
         .course-link {
             text-decoration: none;
-            color: #2980b9;
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: bold;
             display: block;
         }
-        .description {
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #95a5a6;
             font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -57,20 +68,18 @@
 
 <header>
     <h1>Ressources de Mathématiques</h1>
-    <p>Sélectionnez une section pour commencer</p>
+    <p class="subtitle">Sélectionnez une section pour commencer</p>
 </header>
 
 <ul class="course-list">
-    <li class="course-item">
+    <li class="course-item item-probabilite">
         <a href="probabilite.html" class="course-link">Probabilité</a>
     </li>
-
-</ul>
+    
+    </ul>
 
 <footer>
-    <p style="text-align: center; margin-top: 50px; color: #999;">
-        &copy; 2026 - Espace d'apprentissage
-    </p>
+    &copy; 2026 - Espace d'apprentissage
 </footer>
 
 </body>
