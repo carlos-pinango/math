@@ -12,19 +12,20 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f8f9fa; /* Gris très léger pour faire ressortir les cartes */
+            background-color: #f8f9fa;
         }
         header {
             text-align: center;
             padding: 40px 0;
-            background: #2c3e50; /* Garde une base sobre et pro */
+            /* Uniformisation avec le orange de la section Probabilité */
+            background: #e67e22; 
             color: white;
             border-radius: 12px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.2);
         }
-        h1 { margin: 0; font-size: 2.2em; }
-        p.subtitle { margin-top: 10px; opacity: 0.9; }
+        h1 { margin: 0; font-size: 2.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        p.subtitle { margin-top: 10px; opacity: 0.95; font-weight: 500; }
 
         .course-list {
             list-style: none;
@@ -37,23 +38,23 @@
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            border-left: 5px solid #bdc3c7; /* Couleur par défaut grise */
+            border-left: 5px solid #e67e22; /* Ligne orange par défaut */
+            display: flex;
+            align-items: center;
         }
         
-        /* Style spécifique pour la Probabilité */
-        .item-probabilite:hover {
+        .course-item:hover {
             transform: translateX(10px);
-            border-left: 5px solid #e67e22; /* Le orange uniforme */
-        }
-        .item-probabilite .course-link {
-            color: #e67e22;
+            background-color: #fffaf5; /* Teinte très légère d'orange au survol */
         }
 
         .course-link {
             text-decoration: none;
+            color: #d35400; /* Orange plus foncé pour la lisibilité du texte */
             font-size: 1.3em;
             font-weight: bold;
             display: block;
+            width: 100%;
         }
         
         footer {
@@ -68,15 +69,18 @@
 
 <header>
     <h1>Ressources de Mathématiques</h1>
-    <p class="subtitle">Sélectionnez une section pour commencer</p>
+    <p class="subtitle">Plateforme d'apprentissage personnalisée</p>
 </header>
 
 <ul class="course-list">
-    <li class="course-item item-probabilite">
+    <li class="course-item">
         <a href="probabilite.html" class="course-link">Probabilité</a>
     </li>
     
-    </ul>
+    <li class="course-item">
+        <a href="cercle-cylindre.html" class="course-link">Cercle et cylindre</a>
+    </li>
+</ul>
 
 <footer>
     &copy; 2026 - Espace d'apprentissage
