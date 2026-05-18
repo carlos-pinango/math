@@ -1,1 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les pourcentages</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #e67e22;
+            border-bottom: 2px solid #fcf3cf;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .concept-box {
+            background: #fdf2e9;
+            padding: 15px;
+            border-left: 5px solid #e67e22;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        /* ── Mode tabs ── */
+        .mode-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 9px 6px;
+            border: none;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 0.82em;
+            font-weight: bold;
+            cursor: pointer;
+            background: transparent;
+            color: #95a5a6;
+            transition: 0.2s;
+        }
+
+        .mode-tab.active {
+            background: white;
+            color: #e67e22;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .mode-tab:hover:not(.active) {
+            color: #e67e22;
+        }
+
+        /* ── Question ── */
+        .question-wrap {
+            background: #fdf2e9;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .question input[type="number"] {
+            width: 75px;
+            padding: 6px 8px;
+            border: 2px solid #f0a868;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1.1em;
+            font-weight: 800;
+            color: #e67e22;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        .question input[type="number"]::-webkit-outer-spin-button,
+        .question input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .question input[type="number"]:focus { border-color: #e67e22; }
+
+        .question input.narrow { width: 58px; }
+
+        .pct-sign {
+            font-size: 1.2em;
+            font-weight: 900;
+            color: #e67e22;
+            margin-left: -6px;
+        }
+
+        /* ── Grid ── */
+        .grid-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .grid-label {
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #95a5a6;
+            letter-spacing: 0.3px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: #fde8cc;
+            transition: background-color 0.25s ease;
+        }
+
+        .cell.on { background: #e67e22; }
+
+        /* ── Result ── */
+        .result-box {
+            background: #fdf2e9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .result-value {
+            font-size: 2.8em;
+            font-weight: 900;
+            color: #e67e22;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .result-annotation {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            margin-top: 30px;
+            text-decoration: none;
+            color: #95a5a6;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: #2c3e50; padding-left: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>💯 Les pourcentages</h1>
+
+    <div class="concept-box">
+        Un <strong>pourcentage</strong> exprime une <strong>partie</strong> sur <strong>100</strong>.
+        La grille ci-dessous représente toujours le <strong>tout</strong> (100 cases = 100 %).
+        Les cases oranges montrent la partie. Manipule les valeurs pour voir la relation.
+    </div>
+
+    <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="A">🔍 Trouver le %</button>
+        <button class="mode-tab" data-mode="B">🔢 Trouver la partie</button>
+        <button class="mode-tab" data-mode="C">🧩 Trouver le tout</button>
+    </div>
+
+    <div class="question-wrap">
+        <div class="question" id="question"></div>
+    </div>
+
+    <div class="grid-section">
+        <div class="grid-label" id="gridLabel">Chaque case = 1%</div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-label" id="resultLabel">Pourcentage</div>
+        <div class="result-value" id="resultValue">—</div>
+        <div class="result-annotation" id="resultAnnotation"></div>
+    </div>
+
+    <a href="../proportionnalite.html" class="back-link">← Retour à la proportionnalité</a>
+</div>
+
+<script>
+    const state = {
+        mode: 'A',
+        A: { part: 30, whole: 80 },
+        B: { whole: 80, pct: 25 },
+        C: { part: 15, pct: 25 }
+    };
+
+    // Build grid
+    const gridEl = document.getElementById('grid');
+    const cells = [];
+    for (let i = 0; i < 100; i++) {
+        const c = document.createElement('div');
+        c.className = 'cell';
+        gridEl.appendChild(c);
+        cells.push(c);
+    }
+
+    function highlight(n) {
+        const count = Math.min(100, Math.max(0, Math.round(n)));
+        cells.forEach((c, i) => c.classList.toggle('on', i < count));
+        document.getElementById('gridLabel').textContent =
+            `Chaque case = 1%  ·  ${count} case${count !== 1 ? 's' : ''} colorée${count !== 1 ? 's' : ''}`;
+    }
+
+    function setResult(label, value, annotation) {
+        document.getElementById('resultLabel').textContent = label;
+        document.getElementById('resultValue').textContent = value;
+        document.getElementById('resultAnnotation').textContent = annotation;
+    }
+
+    function fmt(n) {
+        return Number.isInteger(n) ? String(n) : n.toFixed(1);
+    }
+
+    function compute() {
+        const { mode } = state;
+        if (mode === 'A') {
+            const { part, whole } = state.A;
+            if (part > whole) {
+                highlight(100);
+                setResult('Pourcentage', '>100 %', 'La partie dépasse le tout !');
+                return;
+            }
+            const pct = (part / whole) * 100;
+            highlight(pct);
+            setResult('Pourcentage', fmt(pct) + ' %', `${part} ÷ ${whole} × 100 = ${fmt(pct)} %`);
+        } else if (mode === 'B') {
+            const { whole, pct } = state.B;
+            const result = (pct / 100) * whole;
+            highlight(pct);
+            setResult('La partie', fmt(result), `${whole} × ${pct} ÷ 100 = ${fmt(result)}`);
+        } else {
+            const { part, pct } = state.C;
+            if (pct <= 0) return;
+            const whole = part / (pct / 100);
+            highlight(pct);
+            setResult('Le tout', fmt(whole),
+                `${part} ÷ (${pct} ÷ 100) = ${part} ÷ ${(pct / 100).toFixed(2)} = ${fmt(whole)}`);
+        }
+    }
+
+    function renderQuestion() {
+        const q = document.getElementById('question');
+        const { mode } = state;
+
+        if (mode === 'A') {
+            const { part, whole } = state.A;
+            q.innerHTML = `
+                <input type="number" min="0" max="1000" value="${part}" id="iPart">
+                <span>est quel pourcentage de</span>
+                <input type="number" min="1" max="1000" value="${whole}" id="iWhole">
+                <span>?</span>`;
+            q.querySelector('#iPart').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 0) { state.A.part = v; compute(); }
+            });
+            q.querySelector('#iWhole').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 1) { state.A.whole = v; compute(); }
+            });
+        } else if (mode === 'B') {
+            const { whole, pct } = state.B;
+            q.innerHTML = `
+                <span>Quel est</span>
+                <input type="number" class="narrow" min="0" max="100" value="${pct}" id="iPct">
+                <span class="pct-sign">%</span>
+                <span>de</span>
+                <input type="number" min="1" max="1000" value="${whole}" id="iWhole">
+                <span>?</span>`;
+            q.querySelector('#iPct').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 0 && v <= 100) { state.B.pct = v; compute(); }
+            });
+            q.querySelector('#iWhole').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 1) { state.B.whole = v; compute(); }
+            });
+        } else {
+            const { part, pct } = state.C;
+            q.innerHTML = `
+                <input type="number" min="0" max="1000" value="${part}" id="iPart">
+                <span>représente</span>
+                <input type="number" class="narrow" min="1" max="100" value="${pct}" id="iPct">
+                <span class="pct-sign">%</span>
+                <span>de quel nombre ?</span>`;
+            q.querySelector('#iPart').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 0) { state.C.part = v; compute(); }
+            });
+            q.querySelector('#iPct').addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v >= 1 && v <= 100) { state.C.pct = v; compute(); }
+            });
+        }
+
+        compute();
+    }
+
+    document.querySelectorAll('.mode-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            state.mode = tab.dataset.mode;
+            document.querySelectorAll('.mode-tab').forEach(t =>
+                t.classList.toggle('active', t === tab));
+            renderQuestion();
+        });
+    });
+
+    renderQuestion();
+</script>
+
+</body>
+</html>
 
