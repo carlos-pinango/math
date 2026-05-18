@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proportionnalité</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { color: #e67e22; border-bottom: 2px solid #fcf3cf; padding-bottom: 10px; }
 
+        .concept-box {
+            background: #fdf2e9;
+            padding: 15px;
+            border-left: 5px solid #e67e22;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .section-title {
+            margin-top: 25px;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .resource-list { list-style: none; padding: 0; margin-top: 10px; }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .btn-action {
+            text-decoration: none;
+            background: #e67e22;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            transition: 0.3s;
+        }
+        .btn-action:hover { background: #d35400; transform: scale(1.05); }
+
+        .back-link {
+            margin-top: 30px;
+            text-decoration: none;
+            color: #95a5a6;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: #2c3e50; padding-left: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Proportionnalité</h1>
+
+    <div class="concept-box">
+        La proportionnalité exprime une relation entre une <strong>partie</strong> et un <strong>tout</strong>.
+        Les pourcentages sont l'un des outils clés pour comprendre et calculer ces relations.
+    </div>
+
+    <p class="section-title">Activités interactives</p>
+
+    <ul class="resource-list">
+        <li class="resource-item">
+            <span>Les pourcentages — explorateur interactif</span>
+            <a href="proportionnalite/pourcentages.html" class="btn-action">Ouvrir</a>
+        </li>
+    </ul>
+
+    <a href="index.html" class="back-link">← Retour aux sections</a>
+</div>
+
+</body>
+</html>
